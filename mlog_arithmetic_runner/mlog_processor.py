@@ -1,6 +1,7 @@
 from .memory import MemoryCell
 from .arithmetic_operators import arithmetic_operators
 
+
 def convert_to_float(obj):
     if isinstance(obj, float):
         return obj
@@ -101,12 +102,12 @@ class MlogProcessor:
             value = convert_to_float(self.get_variable(tokens[1]))
             mem: MemoryCell = self.get_variable(tokens[2])
             pos = self.get_variable(tokens[3])
-            if mem is not None:
+            if isinstance(mem, MemoryCell):
                 mem.write(pos, value)
         elif tokens[0] == "read":
             mem: MemoryCell = self.get_variable(tokens[2])
             pos = self.get_variable(tokens[3])
-            if mem is not None:
+            if isinstance(mem, MemoryCell):
                 self.set_variable(tokens[1], mem.read(pos))
         elif tokens[0] == "getlink":
             # getlink get memory cells/banks ONLY
@@ -125,3 +126,24 @@ class MlogProcessor:
             return False
         self.current_line = self.next_line
         return True
+
+    def run_with_limit(self, limit: int, stop_if_past_the_end=True) -> int:
+        """\
+Return actual cycles we had ran, stop on self-loops.
+Suppose we have such mlog code:
+    set a 42
+    jump 1 always 0 0
+run_with_limit(1) executes only "set a 42"
+run_with_limit(2) (or 3, 4...) stops after executing "jump 1 always 0 0"
+"""
+        code_length = len(self.code)
+        while self.instructions_executed < limit:
+            should_continue = self.run_one_instruction()
+            if not should_continue:
+                break
+            if self.current_line == code_length:
+                if stop_if_past_the_end:
+                    break
+                else:
+                    self.current_line = 0
+        return self.instructions_executed
