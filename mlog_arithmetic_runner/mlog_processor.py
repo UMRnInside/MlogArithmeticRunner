@@ -26,7 +26,7 @@ class MlogProcessor:
         }
         self.lambda_variables = {
             "@tick": lambda: self.instructions_executed // self.ipt,
-            "@time": lambda: (self.instructions_executed // self.ipt) * 60.0,
+            "@time": lambda: (self.instructions_executed // self.ipt) / 60.0,
             "@counter": lambda: self.current_line + 1,
             "@ipt": lambda: self.ipt,
             # getlink get cells/banks
