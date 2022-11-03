@@ -54,7 +54,11 @@ arithmetic_operators["log"] = lambda a, b: math.log(a)
 arithmetic_operators["log10"] = lambda a, b: math.log10(a)
 arithmetic_operators["rand"] = lambda a, b: random.random() * a
 
+# Anuke vector: (x, y)
 arithmetic_operators["angle"] = lambda a, b: math.atan2(b, a)
+arithmetic_operators["len"] = lambda a, b: math.hypot(a, b)
+
+# Anuke: I use degree measures :P
 arithmetic_operators["sin"] = lambda a, b: math.sin(math.radians(a))
 arithmetic_operators["cos"] = lambda a, b: math.cos(math.radians(a))
 arithmetic_operators["tan"] = lambda a, b: math.tan(math.radians(a))
