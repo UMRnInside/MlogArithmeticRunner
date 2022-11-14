@@ -38,9 +38,10 @@ class MlogProcessor:
     def assemble_code(self, mlog_code: str):
         self.code = []
         for line in mlog_code.splitlines():
-            if len(line.split()) <= 0:
+            tokens = tuple(line.split())
+            if len(tokens) <= 0:
                 continue
-            self.code.append(line)
+            self.code.append(tokens)
 
     def reset(self):
         self.current_line = 0
@@ -80,7 +81,7 @@ class MlogProcessor:
         self.next_line = self.current_line + 1
         if self.current_line >= len(self.code):
             return False
-        tokens = self.code[self.current_line].split()
+        tokens = self.code[self.current_line]
         if tokens[0] == "set":
             self.set_variable(tokens[1], self.get_variable(tokens[2]))
         elif tokens[0] == "op":
