@@ -18,17 +18,25 @@ def register_operator(name):
 arithmetic_operators["add"] = lambda a, b : a + b
 arithmetic_operators["sub"] = lambda a, b : a - b
 arithmetic_operators["mul"] = lambda a, b : a * b
-arithmetic_operators["div"] = lambda a, b : a / b
-arithmetic_operators["idiv"] = lambda a, b : a // b
 arithmetic_operators["mod"] = lambda a, b : a % b
 arithmetic_operators["pow"] = lambda a, b : math.pow(a, b)
 
+@register_operator("div")
+def mlog_division(a, b):
+    if b != 0:
+        return a / b
+    return None
+
+@register_operator("idiv")
+def mlog_int_division(a, b):
+    if b != 0:
+        return a // b
+    return None
 
 # TODO: arithmetic only?
 @register_operator("equal")
 def equal(a: float, b: float):
     return 0.0 if abs(a-b) >= ANUKE_EPSILON else 1.0
-
 
 @register_operator("notEqual")
 def not_equal(a: float, b: float):
@@ -55,7 +63,7 @@ arithmetic_operators["log10"] = lambda a, b: math.log10(a)
 arithmetic_operators["rand"] = lambda a, b: random.random() * a
 
 # Anuke vector: (x, y)
-arithmetic_operators["angle"] = lambda a, b: math.atan2(b, a)
+arithmetic_operators["angle"] = lambda a, b: math.degrees(math.atan2(b, a))
 arithmetic_operators["len"] = lambda a, b: math.hypot(a, b)
 
 # Anuke: I use degree measures :P
