@@ -60,6 +60,7 @@ arithmetic_operators["ceil"] = lambda a, b: math.ceil(a)
 arithmetic_operators["floor"] = lambda a, b: math.floor(a)
 arithmetic_operators["log"] = lambda a, b: math.log(a)
 arithmetic_operators["log10"] = lambda a, b: math.log10(a)
+arithmetic_operators["sqrt"] = lambda a, b: math.sqrt(a)
 arithmetic_operators["rand"] = lambda a, b: random.random() * a
 
 # Anuke vector: (x, y)
