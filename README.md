@@ -52,7 +52,6 @@ optional arguments:
 
 ## Limitations
   * Does NOT have `@this` yet, so do `@thisx` and `@thisy`
-  * No label or "jump-to-label" support
   * No comment in mlog code
   * (not sure)
 

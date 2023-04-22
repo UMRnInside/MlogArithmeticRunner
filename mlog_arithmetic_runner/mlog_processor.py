@@ -36,12 +36,34 @@ class MlogProcessor:
         self.reset()
 
     def assemble_code(self, mlog_code: str):
-        self.code = []
+
+        rawCode = self.solveLabel(mlog_code)
+
+        for tokens in rawCode:
+            self.code.append(tuple(tokens))
+
+    def solveLabel(self, mlog_code):
+        rawCode = []
+        labels = {}
+        todel = []
         for line in mlog_code.splitlines():
-            tokens = tuple(line.split())
+            tokens = line.split()
             if len(tokens) <= 0:
                 continue
-            self.code.append(tokens)
+            rawCode.append(tokens)
+        for j in range(len(rawCode)):
+            tokens = rawCode[j]
+            if len(tokens) == 1 & tokens[0].endswith(":"):
+                labels[tokens[0].strip(":")] = rawCode[j + 1]
+                todel.append(tokens)
+        for label in todel:
+            rawCode.remove(label)
+        for label in labels.keys():
+            index = rawCode.index(labels.get(label))
+            for tokens in rawCode:
+                if (tokens[0] == "jump") & (tokens[1] == label):
+                    tokens[1] = index
+        return rawCode
 
     def reset(self):
         self.current_line = 0
@@ -53,13 +75,13 @@ class MlogProcessor:
         }
         self.variables = {}
         for i in range(self.memory_cells):
-            self.constants[f"cell{i+1}"] = MemoryCell(64)
+            self.constants[f"cell{i + 1}"] = MemoryCell(64)
         for i in range(self.memory_banks):
-            self.constants[f"bank{i+1}"] = MemoryCell(512)
+            self.constants[f"bank{i + 1}"] = MemoryCell(512)
 
     def get_variable(self, name: str):
         if name.startswith("@"):
-            return self.lambda_variables.get(name, lambda : None)()
+            return self.lambda_variables.get(name, lambda: None)()
         if name in self.constants:
             return self.constants[name]
         if name in self.variables:
@@ -116,9 +138,9 @@ class MlogProcessor:
             if link_id >= self.get_variable("@links") or link_id < 0:
                 self.set_variable(tokens[1], None)
             elif link_id < self.memory_cells:
-                self.set_variable(tokens[1], self.get_variable(f"cell{link_id+1}"))
+                self.set_variable(tokens[1], self.get_variable(f"cell{link_id + 1}"))
             else:
-                self.set_variable(tokens[1], self.get_variable(f"bank{link_id-self.memory_cells+1}"))
+                self.set_variable(tokens[1], self.get_variable(f"bank{link_id - self.memory_cells + 1}"))
         else:
             raise ValueError(f"Unsupported instruction {tokens[0]}")
         self.instructions_executed += 1
